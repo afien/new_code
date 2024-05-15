@@ -8,7 +8,7 @@ from gym_pybullet_drones.utils.Logger import Logger
 from stable_baselines3.common.evaluation import evaluate_policy
 
 
-path = 'results/save-05.06.2024_23.49.17/best_model.zip'
+path = 'results/save-05.14.2024_12.01.53/best_model.zip'
 model = PPO.load(path)
 test_env = HoverAviary(gui=True,
                        obs=ObservationType('kin'),
@@ -29,7 +29,7 @@ print("\n\n\nMean reward ", mean_reward, " +- ", std_reward, "\n\n")
 
 obs, info = test_env.reset(seed=42, options={})
 start = time.time()
-for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ * 8):
+for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ):
     action, _states = model.predict(obs,
                                     deterministic=True
                                     )

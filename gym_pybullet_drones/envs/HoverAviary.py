@@ -18,7 +18,7 @@ class HoverAviary(BaseRLAviary):
                  gui=False,
                  record=False,
                  obs: ObservationType=ObservationType.KIN,
-                 act: ActionType=ActionType.RPM
+                 act: ActionType=ActionType.VEL
                  ):
         """Initialization of a single agent RL environment.
 
@@ -77,15 +77,25 @@ class HoverAviary(BaseRLAviary):
         state = self._getDroneStateVector(0)
         # ret = max(0, 2 - np.linalg.norm(self.TARGET_POS-state[0:3])**4)
         # return ret
-        epsilon = 0.1
-        bonus = 10
-        r_p = max(0, 2 - np.linalg.norm(self.TARGET_POS-state[0:3])**4)
-        r_v = -np.linalg.norm(state[10:13])**3
-        if np.linalg.norm(state[0:3] - self.TARGET_POS) < epsilon:
-            success_reward = bonus
-        else:
-            success_reward = 0
-        return r_p+r_v+success_reward
+
+
+        distance_to_target = np.linalg.norm(self.TARGET_POS - state[0:3])
+        # 基本獎勵，使朝着目標移动
+        base_reward = 1.0 - distance_to_target
+
+        # 逞罰過大姿態偏移或移動過大
+        attitude_penalty = np.abs(state[7]) + np.abs(state[8])  # Roll and pitch angles
+        movement_penalty = np.linalg.norm(state[3:6])  # Linear velocities
+
+        # 指數函數轉換為reward避免過大逞罰
+        attitude_reward = np.exp(-attitude_penalty)
+        movement_reward = np.exp(-movement_penalty)
+
+        # 組合所有獎勵和逞罰
+        reward = base_reward * attitude_reward * movement_reward
+
+        return reward
+
 
     ################################################################################
     

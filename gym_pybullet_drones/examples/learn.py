@@ -78,17 +78,17 @@ def run(multiagent=DEFAULT_MA,
     #### Train the model #######################################
     model = PPO('MlpPolicy',
                 train_env,
-                # tensorboard_log=filename+'/tb/',
+                tensorboard_log=filename+'/tb/',
                 verbose=1)
 
     #### Target cumulative rewards (problem-dependent) ##########
-    if DEFAULT_ACT == ActionType.ONE_D_RPM:
-        target_reward = 474.15 if not multiagent else 949.5
-    else:
-        # target_reward = 467. if not multiagent else 920.
-        target_reward = 500. if not multiagent else 920.
+    # if DEFAULT_ACT == ActionType.ONE_D_RPM:
+    #     target_reward = 474.15 if not multiagent else 949.5
+    # else:
+    #     target_reward = 467. if not multiagent else 920.
     # callback_on_best = StopTrainingOnRewardThreshold(reward_threshold=target_reward,
     #                                                  verbose=1)
+
     eval_callback = EvalCallback(eval_env,
                                  # callback_on_new_best=callback_on_best,
                                  verbose=1,
@@ -97,12 +97,12 @@ def run(multiagent=DEFAULT_MA,
                                  eval_freq=int(1000),
                                  deterministic=True,
                                  render=False)
-    # model.learn(total_timesteps=int(1e7) if local else int(1e2), # shorter training in GitHub Actions pytest
-    #             callback=eval_callback,
-    #             log_interval=100)
-    model.learn(total_timesteps=20000, # shorter training in GitHub Actions pytest
+    model.learn(total_timesteps=int(1e7) if local else int(1e2), # shorter training in GitHub Actions pytest
                 callback=eval_callback,
                 log_interval=100)
+    # model.learn(total_timesteps=20000, # shorter training in GitHub Actions pytest
+    #             callback=eval_callback,
+    #             log_interval=100)
 
     #### Save the model ########################################
     model.save(filename+'/final_model.zip')

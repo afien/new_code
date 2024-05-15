@@ -155,6 +155,11 @@ class BaseRLAviary(BaseAviary):
         #
         return spaces.Box(low=act_lower_bound, high=act_upper_bound, dtype=np.float32)
 
+
+        #### Action vector ######### X       Y       Z   fract. of MAX_SPEED_KMH
+        act_lower_bound = np.array([[-1,     -1,     -1,                        0] for i in range(self.NUM_DRONES)])
+        act_upper_bound = np.array([[ 1,      1,      1,                        1] for i in range(self.NUM_DRONES)])
+
     ################################################################################
 
     def _preprocessAction(self,
@@ -204,8 +209,8 @@ class BaseRLAviary(BaseAviary):
             elif self.ACT_TYPE == ActionType.VEL:
                 state = self._getDroneStateVector(k)
                 if np.linalg.norm(target[0:3]) != 0:
-                    # v_unit_vector = target[0:3] / np.linalg.norm(target[0:3])
-                    v_unit_vector = [0, 0, target[2]] / np.linalg.norm(target[0:3])
+                    v_unit_vector = target[0:3] / np.linalg.norm(target[0:3])
+                    # v_unit_vector = [0, 0, target[2]] / np.linalg.norm(target[0:3])
                 else:
                     v_unit_vector = np.zeros(3)
                 temp, _, _ = self.ctrl[k].computeControl(control_timestep=self.CTRL_TIMESTEP,
