@@ -1,5 +1,6 @@
 from stable_baselines3 import PPO
 from gym_pybullet_drones.envs import HoverAviary
+from gym_pybullet_drones.envs import VelocityAviary
 from gym_pybullet_drones.utils.enums import ObservationType, ActionType
 from gym_pybullet_drones.utils.utils import sync, str2bool
 import time
@@ -23,13 +24,13 @@ logger = Logger(logging_freq_hz=int(test_env.CTRL_FREQ),
 
 mean_reward, std_reward = evaluate_policy(model,
                                           test_env_nogui,
-                                          n_eval_episodes=10
+                                          n_eval_episodes=100
                                           )
 print("\n\n\nMean reward ", mean_reward, " +- ", std_reward, "\n\n")
 
 obs, info = test_env.reset(seed=42, options={})
 start = time.time()
-for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ):
+for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ * 4):
     action, _states = model.predict(obs,
                                     deterministic=True
                                     )
@@ -38,7 +39,7 @@ for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ):
     act2 = action.squeeze()
     print("Obs:", obs, "\tAction", action, "\tReward:", reward, "\tTerminated:", terminated, "\tTruncated:", truncated)
     logger.log(drone=0,
-               timestamp=i / test_env.CTRL_FREQ,
+               timestamp=i/test_env.CTRL_FREQ,
                state=np.hstack([obs2[0:3],
                                 np.zeros(4),
                                 obs2[3:15],
@@ -53,5 +54,5 @@ for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ):
     if terminated:
         obs = test_env.reset(seed=42, options={})
 # test_env.close()
-
+# logger.save_as_csv("vel") # Optional CSV save
 logger.plot()
