@@ -75,26 +75,26 @@ class HoverAviary(BaseRLAviary):
 
         """
         state = self._getDroneStateVector(0)
-        # ret = max(0, 2 - np.linalg.norm(self.TARGET_POS-state[0:3])**4)
-        # return ret
+        ret = max(0, 2 - np.linalg.norm(self.TARGET_POS-state[0:3])**4)
+        return ret
 
 
-        distance_to_target = np.linalg.norm(self.TARGET_POS - state[0:3])
-        # 基本獎勵，使朝着目標移动
-        base_reward = 1.0 - distance_to_target
-
-        # 逞罰過大姿態偏移或移動過大
-        attitude_penalty = np.abs(state[7]) + np.abs(state[8])  # Roll and pitch angles
-        movement_penalty = np.linalg.norm(state[3:6])  # Linear velocities
-
-        # 指數函數轉換為reward避免過大逞罰
-        attitude_reward = np.exp(-attitude_penalty)
-        movement_reward = np.exp(-movement_penalty)
-
-        # 組合所有獎勵和逞罰
-        reward = base_reward * attitude_reward * movement_reward
-
-        return reward
+        # distance_to_target = np.linalg.norm(self.TARGET_POS - state[0:3])
+        # # 基本獎勵，使朝着目標移动
+        # base_reward = 1.0 - distance_to_target
+        #
+        # # 逞罰過大姿態偏移或移動過大
+        # attitude_penalty = np.abs(state[7]) + np.abs(state[8])  # Roll and pitch angles
+        # movement_penalty = np.linalg.norm(state[3:6])  # Linear velocities
+        #
+        # # 指數函數轉換為reward避免過大逞罰
+        # attitude_reward = np.exp(-attitude_penalty)
+        # movement_reward = np.exp(-movement_penalty)
+        #
+        # # 組合所有獎勵和逞罰
+        # reward = base_reward * attitude_reward * movement_reward
+        #
+        # return reward
 
 
     ################################################################################
