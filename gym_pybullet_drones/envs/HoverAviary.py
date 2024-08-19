@@ -11,6 +11,7 @@ class HoverAviary(BaseRLAviary):
     def __init__(self,
                  drone_model: DroneModel=DroneModel.CF2X,
                  initial_xyzs=None,
+                 # initial_xyzs=np.array([1,1,1]),
                  initial_rpys=None,
                  physics: Physics=Physics.PYB,
                  pyb_freq: int = 240,
@@ -48,8 +49,8 @@ class HoverAviary(BaseRLAviary):
             The type of action space (1 or 3D; RPMS, thurst and torques, or waypoint with PID control)
 
         """
-        self.TARGET_POS = np.array([0,0,2])
-        self.EPISODE_LEN_SEC = 15
+        self.TARGET_POS = np.array([0,3,4])
+        self.EPISODE_LEN_SEC = 30
         super().__init__(drone_model=drone_model,
                          num_drones=1,
                          initial_xyzs=initial_xyzs,
@@ -75,26 +76,37 @@ class HoverAviary(BaseRLAviary):
 
         """
         state = self._getDroneStateVector(0)
-        ret = max(0, 2 - np.linalg.norm(self.TARGET_POS-state[0:3])**4)
-        return ret
+        # ret = max(0, 2 - np.linalg.norm(self.TARGET_POS-state[0:3])**4)
+        # return ret
 
 
-        # distance_to_target = np.linalg.norm(self.TARGET_POS - state[0:3])
-        # # 基本獎勵，使朝着目標移动
+        distance_to_target = np.linalg.norm(self.TARGET_POS - state[0:3])
+        # 基本獎勵，使朝着目標移动
         # base_reward = 1.0 - distance_to_target
-        #
-        # # 逞罰過大姿態偏移或移動過大
-        # attitude_penalty = np.abs(state[7]) + np.abs(state[8])  # Roll and pitch angles
-        # movement_penalty = np.linalg.norm(state[3:6])  # Linear velocities
-        #
-        # # 指數函數轉換為reward避免過大逞罰
-        # attitude_reward = np.exp(-attitude_penalty)
-        # movement_reward = np.exp(-movement_penalty)
-        #
-        # # 組合所有獎勵和逞罰
-        # reward = base_reward * attitude_reward * movement_reward
-        #
-        # return reward
+
+        # 调整基础奖励，使其始终为正值
+        # exp(-distance_to_target) 来平滑地减少奖励
+        base_reward = np.exp(-distance_to_target)
+
+        # 逞罰過大姿態偏移或移動過大
+        attitude_penalty = np.abs(state[7]) + np.abs(state[8])  # Roll and pitch angles
+        attitude_reward = np.exp(-attitude_penalty)
+
+        # 移动惩罚，使其随速度误差收敛
+        movement_penalty = np.linalg.norm(state[3:6])  # 线速度
+        movement_reward = np.exp(-movement_penalty)
+
+        # 新增速度奖励项，鼓励智能体在接近目标时减速
+        # 将速度奖励和移动惩罚区分开来，速度奖励强调接近零速度
+        speed_reward = np.exp(-movement_penalty ** 2)
+
+        # 组合所有奖励和惩罚
+        reward = base_reward * attitude_reward * speed_reward
+
+        # 确保奖励值在合理范围内
+        reward = min(reward, 1.0)  # 设定奖励的上限值，防止过高
+
+        return reward
 
 
     ################################################################################

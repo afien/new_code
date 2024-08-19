@@ -8,12 +8,10 @@ import numpy as np
 from gym_pybullet_drones.utils.Logger import Logger
 from stable_baselines3.common.evaluation import evaluate_policy
 
-
-path = 'results/save-05.29.2024_17.27.29/best_model.zip'
+path = 'results/save-08.07.2024_23.37.22/best_model.zip'
 model = PPO.load(path)
-
 ##################################
-multiagent = True
+multiagent = False
 agents = 2
 ##################################
 
@@ -43,7 +41,7 @@ print("\n\n\nMean reward ", mean_reward, " +- ", std_reward, "\n\n")
 
 obs, info = test_env.reset(seed=42, options={})
 start = time.time()
-for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ * 2):
+for i in range((test_env.EPISODE_LEN_SEC + 2) * test_env.CTRL_FREQ):
     action, _states = model.predict(obs,
                                     deterministic=True
                                     )

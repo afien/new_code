@@ -12,7 +12,8 @@ class MultiHoverAviary(BaseRLAviary):
                  drone_model: DroneModel=DroneModel.CF2X,
                  num_drones: int=2,
                  neighbourhood_radius: float=np.inf,
-                 initial_xyzs=None,
+                 # initial_xyzs=None,
+                 initial_xyzs=np.array([[0,0,.2],[.2,0,.2]]),
                  initial_rpys=None,
                  physics: Physics=Physics.PYB,
                  pyb_freq: int = 240,
@@ -69,7 +70,8 @@ class MultiHoverAviary(BaseRLAviary):
                          act=act
                          )
         # self.TARGET_POS = self.INIT_XYZS + np.array([[0,0,1/(i+1)] for i in range(num_drones)])
-        self.TARGET_POS = self.INIT_XYZS + np.array([[0,i,i+1] for i in range(num_drones)])
+        # self.TARGET_POS = self.INIT_XYZS + np.array([[0,i,i+1] for i in range(num_drones)])
+        self.TARGET_POS = self.INIT_XYZS + np.array([[0,0,2]]) # shoild be a 2-D array
 
     ################################################################################
     
@@ -83,9 +85,25 @@ class MultiHoverAviary(BaseRLAviary):
 
         """
         states = np.array([self._getDroneStateVector(i) for i in range(self.NUM_DRONES)])
+        # ret = 0
+        # for i in range(self.NUM_DRONES):
+        #     # ret += max(0, 2 - np.linalg.norm(self.TARGET_POS[i,:]-states[i][0:3])**4)
+        #     ret += 2 - np.linalg.norm(self.TARGET_POS[i,:]-states[i][0:3])**2
+        # return ret
+
         ret = 0
-        for i in range(self.NUM_DRONES):
-            ret += max(0, 2 - np.linalg.norm(self.TARGET_POS[i,:]-states[i][0:3])**4)
+        for i in range(len(states)):
+            # Distance to target penalty
+            distance_penalty = 10 / (1 + np.linalg.norm(self.TARGET_POS[i,:] - states[i][0:3]))
+
+            # Optionally, add orientation penalty if needed
+            # orientation_penalty = calculate_orientation_penalty(states[i][3:6], target_orientations[i])
+
+            # Total reward for this drone
+            total_reward = distance_penalty  # + orientation_penalty
+
+            # Accumulate rewards
+            ret += total_reward
         return ret
 
     ################################################################################
