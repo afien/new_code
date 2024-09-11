@@ -8,7 +8,7 @@ import numpy as np
 from gym_pybullet_drones.utils.Logger import Logger
 from stable_baselines3.common.evaluation import evaluate_policy
 
-path = 'results/save-08.07.2024_23.37.22/best_model.zip'
+path = 'results/save-08.19.2024_21.49.05/best_model.zip'
 model = PPO.load(path)
 ##################################
 multiagent = False

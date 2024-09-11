@@ -49,7 +49,8 @@ class HoverAviary(BaseRLAviary):
             The type of action space (1 or 3D; RPMS, thurst and torques, or waypoint with PID control)
 
         """
-        self.TARGET_POS = np.array([0,3,4])
+        # self.TARGET_POS = np.array([0,3,4])
+        self._reset_target_pos()
         self.EPISODE_LEN_SEC = 30
         super().__init__(drone_model=drone_model,
                          num_drones=1,
@@ -61,8 +62,19 @@ class HoverAviary(BaseRLAviary):
                          gui=gui,
                          record=record,
                          obs=obs,
-                         act=act
+                         act=act,
                          )
+
+    ### build widely used trained model ######
+    def _reset_target_pos(self):
+        """Reset target position randomly within a specified range."""
+        self.TARGET_POS = np.random.uniform(low=[-3, -3, 0.5], high=[3, 3, 3])
+
+    # def reset(self):
+    #     """Override reset to randomize target position each episode."""
+    #     self._reset_target_pos()
+    #     return super().reset()
+    ##########################################
 
     ################################################################################
     

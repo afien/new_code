@@ -7,9 +7,8 @@
     <list default="true" id="e203c480-039c-4020-8daa-32d6052023f4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/new_code.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/new_code.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gym-pybullet-drones.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gym-pybullet-drones.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/envs/HoverAviary.py" beforeDir="false" afterPath="$PROJECT_DIR$/envs/HoverAviary.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/show_tained_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/show_tained_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
