@@ -7,7 +7,9 @@
     <list default="true" id="e203c480-039c-4020-8daa-32d6052023f4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/new_code.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/new_code.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/envs/HoverAviary.py" beforeDir="false" afterPath="$PROJECT_DIR$/envs/HoverAviary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/envs/MultiHoverAviary.py" beforeDir="false" afterPath="$PROJECT_DIR$/envs/MultiHoverAviary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/learn.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/learn.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +32,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
   </component>
-  <component name="RunManager" selected="Python.show_tained_model">
+  <component name="RunManager" selected="Python.learn">
     <configuration name="learn" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="gym-pybullet-drones" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -75,8 +77,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.show_tained_model" />
         <item itemvalue="Python.learn" />
+        <item itemvalue="Python.show_tained_model" />
       </list>
     </recent_temporary>
   </component>
@@ -103,6 +105,11 @@
           <url>file://$PROJECT_DIR$/envs/HoverAviary.py</url>
           <line>51</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/envs/BaseRLAviary.py</url>
+          <line>244</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

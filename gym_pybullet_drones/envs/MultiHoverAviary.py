@@ -13,7 +13,7 @@ class MultiHoverAviary(BaseRLAviary):
                  num_drones: int=2,
                  neighbourhood_radius: float=np.inf,
                  # initial_xyzs=None,
-                 initial_xyzs=np.array([[0,0,.2],[.2,0,.2]]),
+                 initial_xyzs=np.array([[0,0,.1],[.1,0,.1]]),
                  initial_rpys=None,
                  physics: Physics=Physics.PYB,
                  pyb_freq: int = 240,
@@ -55,7 +55,7 @@ class MultiHoverAviary(BaseRLAviary):
             The type of action space (1 or 3D; RPMS, thurst and torques, or waypoint with PID control)
 
         """
-        self.EPISODE_LEN_SEC = 8
+        self.EPISODE_LEN_SEC = 40
         super().__init__(drone_model=drone_model,
                          num_drones=num_drones,
                          neighbourhood_radius=neighbourhood_radius,
@@ -71,7 +71,7 @@ class MultiHoverAviary(BaseRLAviary):
                          )
         # self.TARGET_POS = self.INIT_XYZS + np.array([[0,0,1/(i+1)] for i in range(num_drones)])
         # self.TARGET_POS = self.INIT_XYZS + np.array([[0,i,i+1] for i in range(num_drones)])
-        self.TARGET_POS = self.INIT_XYZS + np.array([[0,0,2]]) # shoild be a 2-D array
+        self.TARGET_POS = self.INIT_XYZS + np.array([[0,0,1.5]]) # shoild be a 2-D array
 
     ################################################################################
     
@@ -91,20 +91,41 @@ class MultiHoverAviary(BaseRLAviary):
         #     ret += 2 - np.linalg.norm(self.TARGET_POS[i,:]-states[i][0:3])**2
         # return ret
 
-        ret = 0
-        for i in range(len(states)):
-            # Distance to target penalty
-            distance_penalty = 10 / (1 + np.linalg.norm(self.TARGET_POS[i,:] - states[i][0:3]))
+        # 目標項
+        reward_distance = 0
+        for i in range(self.NUM_DRONES):
+            reward_distance -= np.linalg.norm(self.TARGET_POS[i,:] - states[i][0:3])
 
-            # Optionally, add orientation penalty if needed
-            # orientation_penalty = calculate_orientation_penalty(states[i][3:6], target_orientations[i])
+        # 競爭項
+        alpha = 1
+        reward_competition = alpha * abs(np.linalg.norm(self.TARGET_POS[0,:] - states[0][0:3]) - np.linalg.norm(self.TARGET_POS[1,:] - states[1][0:3]))
 
-            # Total reward for this drone
-            total_reward = distance_penalty  # + orientation_penalty
+        # 碰撞逞罰
+        distance_between_agents = np.linalg.norm(self.TARGET_POS[0,:] - self.TARGET_POS[1,:])
+        if distance_between_agents < .5:
+            reward_collision = -10
+        else:
+            reward_collision = 0
 
-            # Accumulate rewards
-            ret += total_reward
-        return ret
+        # total reward
+        reward = reward_distance + reward_competition + reward_collision
+
+        return reward
+
+        # ret = 0
+        # for i in range(len(states)):
+        #     # Distance to target penalty
+        #     distance_penalty = 10 / (1 + np.linalg.norm(self.TARGET_POS[i,:] - states[i][0:3]))
+        #
+        #     # Optionally, add orientation penalty if needed
+        #     # orientation_penalty = calculate_orientation_penalty(states[i][3:6], target_orientations[i])
+        #
+        #     # Total reward for this drone
+        #     total_reward = distance_penalty  # + orientation_penalty
+        #
+        #     # Accumulate rewards
+        #     ret += total_reward
+        # return ret
 
     ################################################################################
     
